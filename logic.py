@@ -1,4 +1,3 @@
-# logic.py
 import os, csv
 from PyQt6.QtWidgets import QMainWindow, QLineEdit
 from PyQt6.QtGui import QIntValidator
@@ -14,24 +13,20 @@ class GradesApp(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowTitle("Student Grades")
 
-        # restrict attempts to 1..4 in the line edit
         self.ui.attemptsEdit.setPlaceholderText("1–4")
         self.ui.attemptsEdit.setValidator(QIntValidator(1, 4, self))
 
         self.score_edits = []
 
-        # rebuild scores whenever attempts changes
         self.ui.attemptsEdit.textChanged.connect(self._attempts_changed)
 
-        # submit handler
         self.ui.submitButton.clicked.connect(self.handle_submit)
 
-        # initial state (default to 2 if empty)
         if not self.ui.attemptsEdit.text().strip():
             self.ui.attemptsEdit.setText("2")
         self.build_score_inputs(self._get_attempts())
 
-    # ---- helpers ----
+    
     def _attempts_changed(self):
         n = self._get_attempts(silent=True)
         self.build_score_inputs(n)
@@ -47,12 +42,10 @@ class GradesApp(QMainWindow):
         return 2
 
     def build_score_inputs(self, n: int):
-        # clear current
         for e in self.score_edits:
             e.deleteLater()
         self.score_edits.clear()
 
-        # create n score edits
         for i in range(1, n + 1):
             edit = QLineEdit(self)
             edit.setObjectName(f"score{i}Edit")
@@ -69,7 +62,6 @@ class GradesApp(QMainWindow):
         self.ui.statusLabel.setStyleSheet(f"color:{color};")
         self.ui.statusLabel.setText(text)
 
-    # ---- validation + save ----
     def validate(self):
         name = self.ui.nameEdit.text().strip()
         if not name:
